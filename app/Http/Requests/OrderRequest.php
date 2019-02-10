@@ -24,7 +24,11 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'body'                  => 'required|max:300|string',
+            'skill'                 => 'required',
+            'recommended_price'     => 'integer',
+            'recommended_deadline'  => 'date'
+
         ];
     }
 }

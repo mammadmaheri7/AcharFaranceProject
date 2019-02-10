@@ -45,7 +45,7 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
-        //validate
+        //validated request in OrderRequest
 
         $skill = Skill::where('id',$request->skill)->firstOrFail();
         $user = auth()->user();
@@ -137,6 +137,10 @@ class OrderController extends Controller
 
     public function addPhoto($id,Request $request)
     {
+        $this->validate($request,[
+            'file'  =>  'mimes:jpeg,jpg,png,gif|max:10000'
+        ]);
+
         $photo_path = $request->file('file')->store('photosOforders');
 
         $photo = new Photo(['photo_path'=>$photo_path]);
