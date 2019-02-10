@@ -137,7 +137,6 @@ class OrderController extends Controller
 
     public function addPhoto($id,Request $request)
     {
-        Log::alert('salam');
         $photo_path = $request->file('file')->store('photosOforders');
 
         $photo = new Photo(['photo_path'=>$photo_path]);

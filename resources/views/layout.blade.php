@@ -14,6 +14,7 @@
             }
 
             nav
+            nav
             {
                 padding: 2px;
             }
