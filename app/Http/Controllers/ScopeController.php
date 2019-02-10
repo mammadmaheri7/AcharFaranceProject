@@ -109,7 +109,7 @@ class ScopeController extends Controller
      */
     public function destroy($id)
     {
-        //authorize soon an d
+        //authorize soon an da
         $this->authorize('scope_delete');
     }
 }
