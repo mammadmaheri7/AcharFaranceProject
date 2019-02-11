@@ -11,6 +11,7 @@
 |
 */
 use App\Http\Controllers\Auth\SocialAccountController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,9 +26,9 @@ Route::get('email',function () {
 
 Route::resource('/scopes','ScopeController');
 
-Route::resource('/orders','OrderController');
-Route::post('orders/{id}/photos','OrderController@addPhoto');
-Route::get('orders/{id}/addPhoto','OrderController@addPhotoPage');
+Route::resource('/orders','OrderController')                        -> middleware('verified');
+Route::post('orders/{id}/photos','OrderController@addPhoto')        -> middleware('verified');
+Route::get('orders/{id}/addPhoto','OrderController@addPhotoPage')   -> middleware('verified');
 
 Route::resource('/skills','SkillController');
 Route::post('skills/{id}/photos','SkillController@addPhoto');
@@ -40,7 +41,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/login/{provider}', 'Auth\SocialAccountController@redirectToProvider');
 Route::get('/login/{provider}/callback', 'Auth\SocialAccountController@handleProviderCallback');
 
-Auth::routes();
+
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -58,4 +59,4 @@ Route::get('/dashboard',function (){
 
 }) -> middleware('verified');
 
-//TODO : email verification for urls
+

@@ -43,8 +43,6 @@ class OrderController extends Controller
     public function create()
     {
         //$this->authorize('order_create');
-        Mail::to(Auth::user())
-                -> send(new OrderShipped());
 
         $skills = Skill::all();
         return view('orders.create',compact('skills'));
@@ -73,6 +71,9 @@ class OrderController extends Controller
         $temp->orders()->save($order);
 
         flash()->success('Create Order', 'creation was successful');
+
+        Mail::to(Auth::user())
+            -> send(new OrderShipped());
 
         //return $order;
         return redirect("orders/".$order->id."/addPhoto");
