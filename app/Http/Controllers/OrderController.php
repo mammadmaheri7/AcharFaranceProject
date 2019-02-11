@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Mail\OrderShipped;
 use App\MotionGraphicOrder;
 use App\Order;
 use App\Photo;
 use App\Skill;
 use App\WebDesignOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -40,6 +43,8 @@ class OrderController extends Controller
     public function create()
     {
         //$this->authorize('order_create');
+        Mail::to(Auth::user())
+                -> send(new OrderShipped());
 
         $skills = Skill::all();
         return view('orders.create',compact('skills'));

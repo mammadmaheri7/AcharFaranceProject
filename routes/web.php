@@ -56,4 +56,6 @@ Route::get('/dashboard',function (){
     }
     return $orders;
 
-});
+}) -> middleware('verified');
+
+//TODO : email verification for urls
