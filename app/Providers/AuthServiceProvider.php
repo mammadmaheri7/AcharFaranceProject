@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Order;
 use App\Permission;
+
+use App\Policies\OrderPolicy;
 use App\User;
+
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
@@ -16,7 +20,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
+        Order::class => OrderPolicy::class,
         'App\Model' => 'App\Policies\ModelPolicy',
+
     ];
 
     /**

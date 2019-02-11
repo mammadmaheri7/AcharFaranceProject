@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    /*
+    public function __construct()
+    {
+        $this->authorizeResource(Order::class,'orders');
+    }
+    */
     /**
      * Display a listing of the resource.
      *
@@ -20,6 +26,8 @@ class OrderController extends Controller
      */
     public function index()
     {
+        //$this->authorize('order_index');
+
         $orders = Order::with('photos')->get();
         return $orders;
     }
@@ -46,6 +54,7 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         //validated request in OrderRequest
+        //$this->authorize('order_create');
 
         $skill = Skill::where('id',$request->skill)->firstOrFail();
         $user = auth()->user();
@@ -72,8 +81,12 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //authorize
+        Log::info('show in ordercontroller');
         $order = Order::where('id',$id)->firstOrFail();
+        $this->authorize('show',$order);
+        //$this->authorize('view',$order);
+        //authorize
+
         return $order;
     }
 
