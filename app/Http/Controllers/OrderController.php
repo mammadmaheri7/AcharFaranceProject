@@ -53,7 +53,7 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
-        //validated request in OrderRequest
+        //request validated in OrderRequest
         //$this->authorize('order_create');
 
         $skill = Skill::where('id',$request->skill)->firstOrFail();
@@ -81,11 +81,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        Log::info('show in ordercontroller');
-        $order = Order::where('id',$id)->firstOrFail();
+        $order = Order::where('id',$id)->with('photos')->firstOrFail();
         $this->authorize('show',$order);
-        //$this->authorize('view',$order);
-        //authorize
 
         return $order;
     }
@@ -169,8 +166,9 @@ class OrderController extends Controller
     public function addPhotoPage($id,Request $request)
     {
         //$this->authorize('order_edit');
-
         $order = Order::where('id',$id)->firstOrFail();
+        $this->authorize('addPhotoPage',$order);
+
         return view('orders.addPhoto',compact('order'));
     }
 }

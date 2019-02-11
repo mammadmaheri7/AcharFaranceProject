@@ -23,7 +23,6 @@ class OrderPolicy
 
     public function show(User $user,Order $order)
     {
-
         if($user->id == $order->user_id)
         {
             return true;
@@ -42,7 +41,15 @@ class OrderPolicy
                     }
                 }
             }
-            //
+        }
+        return false;
+    }
+
+    public function addPhotoPage(User $user,Order $order)
+    {
+        if($user->id == $order->user_id)
+        {
+            return true;
         }
         return false;
     }
