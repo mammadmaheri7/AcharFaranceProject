@@ -73,7 +73,7 @@ class OrderController extends Controller
         flash()->success('Create Order', 'creation was successful');
 
         Mail::to(Auth::user())
-            -> send(new OrderShipped());
+            -> send(new OrderShipped($user,$order));
 
         //return $order;
         return redirect("orders/".$order->id."/addPhoto");
