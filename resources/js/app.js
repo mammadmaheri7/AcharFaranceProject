@@ -4,7 +4,7 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-import swal from 'sweetalert'
+
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -15,8 +15,36 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('chat', require('./components/Chat.vue'));
+Vue.component('chat-composer', require('./components/ChatComposer.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    data:{
+        chats:''
+    },
+    created()
+    {
+
+        console.log('created of ap.js started');
+        const userId = $('meta[name="userId"]').attr('content');
+        const friendId = $('meta[name="friendId"]').attr('content');
+
+        if(friendId != undefined)
+        {
+            axios.post('/chat/getChat/' + friendId)
+                .then((response)=>{
+                    this.chats = response.data;
+                });
+
+            console.log('Chat.' + friendId + '.' + userId);
+
+            Echo.private('Chat.' + friendId + '.' + userId)
+                .listen('BroadcastChat',(e) => {
+                    console.log('listend');
+                    this.chats.push(e.chat);
+                });
+            console.log('done');
+        }
+    }
 });

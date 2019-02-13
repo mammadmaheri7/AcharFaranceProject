@@ -26,8 +26,6 @@ class OrderShipped extends Mailable
     {
         $this->user = $user;
         $this->order = $order;
-
-        //dump($order);
     }
 
     /**
@@ -37,7 +35,10 @@ class OrderShipped extends Mailable
      */
     public function build()
     {
-        return $this->from('mohamadmaheri7777@gmail.com')
-                    ->view('email.orderShipped');
+        return $this -> from('mohamadmaheri7777@gmail.com')
+                     -> view('email.orderShipped');
     }
 }
+
+
+//TODO : orderShipEmail and verificationEmail should be queued

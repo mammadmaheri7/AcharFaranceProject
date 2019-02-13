@@ -59,5 +59,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Order::class);
     }
 
-    //TODO : send verification email manually when registerd
+    public function friendsOfMine()
+    {
+        return $this->belongsToMany('App\User','friends','user_id','friend_id');
+    }
+
+    public function friendOf()
+    {
+        return $this->belongsToMany('App\User','friends','friend_id','user_id');
+    }
+
+    public function friends()
+    {
+        return $this->friendsOfMine->merge($this->friendOf);
+    }
 }

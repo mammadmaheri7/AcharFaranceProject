@@ -22,7 +22,7 @@ Route::get('email',function () {
         $message->to('mohamadmaheri@yahoo.com','AcharFarance Admin')
                 ->subject('welcome to AcharFarance');
     });
-})->middleware('verified');
+})                                                                  ->middleware('verified');
 
 Route::resource('/scopes','ScopeController');
 
@@ -45,6 +45,13 @@ Route::get('/login/{provider}/callback', 'Auth\SocialAccountController@handlePro
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/friends','FriendController@index')                     ->middleware('auth');
+
+Route::get('/chat','ChatController@index')                          ->middleware('auth')->name('chat.index');
+Route::get('/chat/{id}','ChatController@show')                      ->middleware('auth')->name('chat.show');
+Route::post('/chat/getChat/{id}','ChatController@getChat')          ->middleware('auth');
+Route::post('/chat/sendChat','ChatController@sendChat')             ->middleware('auth');
+
 Route::get('/dashboard',function (){
 
     $user = auth()->user();
@@ -57,6 +64,6 @@ Route::get('/dashboard',function (){
     }
     return $orders;
 
-}) -> middleware('verified');
+})                                                                  -> middleware('verified');
 
 
