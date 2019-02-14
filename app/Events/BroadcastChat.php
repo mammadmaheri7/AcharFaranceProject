@@ -26,7 +26,7 @@ class BroadcastChat implements ShouldBroadcast
     public function __construct(Chat $chat)
     {
         $this->chat = $chat;
-        Log::info('broadcastChat constructor');
+        Log::info('broadcastChat constructor -> ' . 'Chat.' . $this->chat->user_id . '.' . $this->chat->friend_id . ' UF');
 
 
     }
@@ -39,6 +39,7 @@ class BroadcastChat implements ShouldBroadcast
     public function broadcastOn()
     {
         Log::info('broadcastChat broadcastOn');
+
         return new PrivateChannel('Chat.' . $this->chat->user_id . '.' . $this->chat->friend_id);
     }
 }

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!-- <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"> -->
+<html lang="{{ app()->getLocale() }}">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,10 +11,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Laravel') }} {{ app()->version() }}</title>
 
-    <!-- Scripts -->
-    <!--<script src="{{ asset('js/app.js') }}" defer></script> -->
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -74,9 +74,9 @@
             </div>
         </nav>
 
-        <main class="py-4">
+
             @yield('content')
-        </main>
+
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

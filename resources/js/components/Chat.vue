@@ -9,7 +9,7 @@
         box-shadow: inset 0 0 20px 0 grey;
         margin-bottom: 20px;
         border:1px solid gray;
-        max-height: 600 px;
+        max-height: 600px;
         overflow-x : auto;
     }
 
@@ -28,7 +28,7 @@
         float: left;
     }
     .no-message{
-        height:200 px;
+        height:200px;
         display:flex;
         align-items: center;
     }

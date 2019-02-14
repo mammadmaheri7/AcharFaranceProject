@@ -16,7 +16,7 @@
         {
             return{
                 chat:''
-            }
+            };
         },
         methods:{
             sendChat:function (e) {
@@ -28,18 +28,19 @@
                         friend_id:this.friendid,
                         user_id:this.userid
 
-                    }
+                    };
 
                     this.chat='';
 
                     axios.post('/chat/sendChat',data)
                             .then((response)=>{
 
-                                this.chats.push(data)
+                                this.chats.push(data);
+
                             })
                             .catch(error=>{
-                                console.log(error)
-                    });
+                                console.log(error);
+                    })
 
 
                 }

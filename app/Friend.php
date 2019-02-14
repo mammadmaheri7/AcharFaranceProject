@@ -9,4 +9,11 @@ class Friend extends Model
     protected $fillable=[
         'user_id','friend_id'
     ];
+
+    /*
+    public function addFriend(User $user)
+    {
+        $this->
+    }
+    */
 }

@@ -103,13 +103,14 @@ class ChatController extends Controller
 
     public function sendChat(Request $request)
     {
-        Chat::create([
+        $chat = Chat::create([
             'user_id' => $request->user_id,
             'friend_id' => $request->friend_id,
             'chat' => $request->chat
         ]);
 
-
+        //BroadcastChat trigger when ever Chat created
+        //broadcast(new BroadcastChat($chat));
 
         return [];
     }

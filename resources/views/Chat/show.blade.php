@@ -2,13 +2,19 @@
 
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <audio id="ChatAudio">
+        <source src="{{asset('sounds/chatNotification.mp3')}}">
+    </audio>
 
     <meta name="friendId" content="{{$friend->id}}">
     <div class="containter">
         <div class="column is-8 is-offset-2">
             <div class="panel">
                 <div class="panel-heading">
-                    {{$friend->name}}
+                    <div>
+                        {{$friend->name}}
+
+                    </div>
 
                     <div class="contain is-pulled-right">
                         <a href="{{url('/chat')}}" class="is-link">
