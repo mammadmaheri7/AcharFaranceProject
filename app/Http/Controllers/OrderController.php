@@ -29,7 +29,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //$this->authorize('order_index');
+        $this->authorize('order_index');
 
         $orders = Order::with('photos')->get();
         return $orders;
@@ -42,7 +42,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //$this->authorize('order_create');
+        $this->authorize('order_create');
 
         $skills = Skill::all();
         return view('orders.create',compact('skills'));
@@ -57,7 +57,7 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         //request validated in OrderRequest
-        //$this->authorize('order_create');
+        $this->authorize('order_create');
 
         $skill = Skill::where('id',$request->skill)->firstOrFail();
         $user = auth()->user();
@@ -101,7 +101,7 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        //authorize
+        //TODO authorize and edit and redirect
     }
 
     /**
@@ -113,7 +113,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //validate
+        //TODO authorize and update and redirect
     }
 
     /**
@@ -124,7 +124,7 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //TODO authorize and delete and redirect
     }
 
     protected function create_order_detail(OrderRequest $request,Skill $skill)
@@ -157,13 +157,12 @@ class OrderController extends Controller
             'file'  =>  'mimes:jpeg,jpg,png,gif|max:10000'
         ]);
 
-        $photo_path = $request->file('file')->store('photosOforders');
-
-        $photo = new Photo(['photo_path'=>$photo_path]);
-
         $order = Order::where('id',$id)->firstOrFail();
-        $order->photos()->save($photo);
+        $this->authorize('addPhotoPage',$order);
 
+        $photo_path = $request->file('file')->store('photosOforders');
+        $photo = new Photo(['photo_path'=>$photo_path]);
+        $order->photos()->save($photo);
         $photo->save();
 
         return $order;
@@ -171,7 +170,6 @@ class OrderController extends Controller
 
     public function addPhotoPage($id,Request $request)
     {
-        //$this->authorize('order_edit');
         $order = Order::where('id',$id)->firstOrFail();
         $this->authorize('addPhotoPage',$order);
 
