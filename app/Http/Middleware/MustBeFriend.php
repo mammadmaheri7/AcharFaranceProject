@@ -22,5 +22,6 @@ class MustBeFriend
             return redirect('/chat');
         }
         return $next($request);
+
     }
 }
