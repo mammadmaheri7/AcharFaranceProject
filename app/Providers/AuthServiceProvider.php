@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Chat;
 use App\Order;
 use App\Permission;
 
+use App\Policies\ChatPolicy;
 use App\Policies\OrderPolicy;
 use App\User;
 
@@ -14,17 +16,6 @@ use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        Order::class => OrderPolicy::class,
-        'App\Model' => 'App\Policies\ModelPolicy',
-
-    ];
-
     /**
      * Register any authentication / authorization services.
      *
@@ -42,6 +33,19 @@ class AuthServiceProvider extends ServiceProvider
             });
         }
     }
+
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        Chat::class => ChatPolicy::class,
+        Order::class => OrderPolicy::class,
+
+        'App\Model' => 'App\Policies\ModelPolicy',
+
+    ];
 
 
     protected function getPermission()
