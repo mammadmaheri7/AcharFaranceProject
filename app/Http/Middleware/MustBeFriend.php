@@ -23,5 +23,7 @@ class MustBeFriend
         }
         return $next($request);
 
+        //
+
     }
 }
