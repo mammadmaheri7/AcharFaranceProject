@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class OrderController extends Controller
 {
@@ -95,12 +96,15 @@ class OrderController extends Controller
         $order -> order_status() -> associate($status);
         $order -> save();
 
-        flash()->success('Create Order', 'creation was successful');
+
 
         Mail::to(Auth::user())
             -> send(new OrderShipped($user,$order));
 
+        flash()->success('Create Order', 'creation was successful');
+
         //return $order;
+        //return redirect("orders/".$order->id."/addPhoto")->with('success', 'Order registered Successfully!');
         return redirect("orders/".$order->id."/addPhoto");
     }
 
@@ -195,6 +199,7 @@ class OrderController extends Controller
 
     public function addPhotoPage($id,Request $request)
     {
+        //Alert::success('Success Title', 'Success Message');
         $order = Order::where('id',$id)->firstOrFail();
         $this->authorize('addPhotoPage',$order);
 

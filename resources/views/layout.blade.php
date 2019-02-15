@@ -2,10 +2,17 @@
 
 <html lang="en">
     <head>
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
         <meta charset="UTF-8">
         <title>AcharFarance </title>
         <link rel="stylesheet" href="/css/app.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css">
+
+
 
         <style>
             div
@@ -23,6 +30,7 @@
     </head>
 
     <body>
+    @include('sweetalert::alert')`
 
     <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
         <div class="container" >
@@ -80,20 +88,21 @@
         </section>
 
 
-        <script src="/js/app.js"></script>
+
 
         @if(session()->has('flash_message'))
             <script>
                 swal({
                     title: "{{session('flash_message.title')}}",
                     text: "{{session('flash_message.message')}}",
-                    icon: "{{session('flash_message.level')}}",
+                    type: "{{session('flash_message.level')}}",
                     timer: 1700,
                 });
             </script>
         @endif
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
+
+
 
     </body>
 </html>
