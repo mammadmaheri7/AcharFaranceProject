@@ -6,9 +6,11 @@ use App\Http\Requests\OrderRequest;
 use App\Mail\OrderShipped;
 use App\MotionGraphicOrder;
 use App\Order;
+use App\OrderStatus;
 use App\Photo;
 use App\Skill;
 use App\WebDesignOrder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -63,12 +65,35 @@ class OrderController extends Controller
         $user = auth()->user();
 
         $order = new Order($request->all());
-
         $skill->orders()->save($order);
         $user->orders()->save($order);
 
+        //create datail for order
         $temp = $this->create_order_detail($request,$skill);
         $temp->orders()->save($order);
+
+        //create order_status
+        //handle if registered(status) or undefined(status) does not exist
+        try
+        {
+            $status = OrderStatus::where('name','registered') -> firstOrFail();
+        }
+        catch (ModelNotFoundException $e)
+        {
+            try
+            {
+                $status = OrderStatus::where('name','undefined') -> firstOrFail();
+            }
+            catch (ModelNotFoundException $er)
+            {
+                $status = new OrderStatus(['name'=>'undefined']);
+                $status->save();
+            }
+        }
+
+        //save order_status in order
+        $order -> order_status() -> associate($status);
+        $order -> save();
 
         flash()->success('Create Order', 'creation was successful');
 

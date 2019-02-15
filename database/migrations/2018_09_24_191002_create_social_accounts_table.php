@@ -17,7 +17,7 @@ class CreateSocialAccountsTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
-            $table->integer('user_id');
+            $table->integer('user_id')->onDelete('cascade');
             $table->string('provider_name')->nullable();
             $table->string('provider_id')->unique()->nullable();
         });

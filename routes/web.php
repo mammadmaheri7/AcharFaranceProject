@@ -12,6 +12,7 @@
 */
 use App\Http\Controllers\Auth\SocialAccountController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +24,11 @@ Route::get('email',function () {
                 ->subject('welcome to AcharFarance');
     });
 })                                                                  ->middleware('verified');
+
+Route::get('/test',function (){
+    Schema::disableForeignKeyConstraints();
+    Schema::drop('users');
+});
 
 Route::resource('/scopes','ScopeController');
 
