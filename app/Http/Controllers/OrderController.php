@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Jobs\SendCreateOrderEmail;
 use App\Mail\OrderShipped;
 use App\MotionGraphicOrder;
 use App\Order;
@@ -97,9 +98,11 @@ class OrderController extends Controller
         $order -> save();
 
 
-
+        /*
         Mail::to(Auth::user())
             -> send(new OrderShipped($user,$order));
+        */
+        SendCreateOrderEmail::dispatch() -> onQueue('mails');
 
         flash()->success('Create Order', 'creation was successful');
 
