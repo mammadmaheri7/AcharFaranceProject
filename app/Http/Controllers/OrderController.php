@@ -104,6 +104,7 @@ class OrderController extends Controller
         //return $order;
         //return redirect("orders/".$order->id."/addPhoto")->with('success', 'Order registered Successfully!');
         return redirect("orders/".$order->id."/addPhoto");
+
     }
 
     /**
