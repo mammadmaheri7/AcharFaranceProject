@@ -100,12 +100,7 @@ class OrderController extends Controller
         SendCreateOrderEmail::dispatch($order,$user)->onConnection('database');
 
         flash()->success('Create Order', 'creation was successful');
-
-        //return $order;
-        //return redirect("orders/".$order->id."/addPhoto")->with('success', 'Order registered Successfully!');
         return redirect("orders/".$order->id."/addPhoto");
-
-
     }
 
     /**
