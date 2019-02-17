@@ -17,14 +17,17 @@ class SendCreateOrderEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user;
-    protected $order;
+
+    public $order;
+    public $user;
+
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param User $user
+     * @param Order $order
      */
-    public function __construct(User $user,Order $order)
+    public function __construct(Order $order,User $user)
     {
         $this -> order = $order;
         $this -> user = $user;
@@ -33,11 +36,18 @@ class SendCreateOrderEmail implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
+     * @param User $user
+     * @param Order $order
      */
     public function handle()
     {
-        Mail::to(Auth::user())
-            -> send(new OrderShipped($user,$order));
+
+        //dd('annnn');
+        //dd($this->user);
+
+        //dd($this->user->email);
+        Mail::to($this->user->email)
+            -> send(new OrderShipped($this->user,$this->order));
+        //dd([Auth::user(),$order]);
     }
 }

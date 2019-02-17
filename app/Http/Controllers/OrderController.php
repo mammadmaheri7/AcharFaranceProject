@@ -98,11 +98,8 @@ class OrderController extends Controller
         $order -> save();
 
 
-        /*
-        Mail::to(Auth::user())
-            -> send(new OrderShipped($user,$order));
-        */
-        SendCreateOrderEmail::dispatch() -> onQueue('mails');
+
+        SendCreateOrderEmail::dispatch($order,$user)->onConnection('database');
 
         flash()->success('Create Order', 'creation was successful');
 
