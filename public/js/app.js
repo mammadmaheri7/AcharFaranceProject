@@ -14326,50 +14326,57 @@ Vue.component('chat', __webpack_require__(44));
 Vue.component('chat-composer', __webpack_require__(50));
 Vue.component('onlineuser', __webpack_require__(55));
 
-var app = new Vue({
-    el: '#app',
-    data: {
-        chats: '',
-        onlineUsers: ''
-    },
-    created: function created() {
-        var _this = this;
+window.onload = function () {
+    var app = new Vue({
+        el: '#app',
+        data: {
+            chats: '',
+            onlineUsers: ''
+        },
+        created: function created() {
+            var _this = this;
 
-        console.log('created of ap.js started');
-        var userId = $('meta[name="userId"]').attr('content');
-        var friendId = $('meta[name="friendId"]').attr('content');
-
-        if (friendId != undefined) {
-            axios.post('/chat/getChat/' + friendId).then(function (response) {
-                _this.chats = response.data;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
+            console.log('created of ap.js started');
+            var userId = $('meta[name="userId"]').attr('content');
+            var friendId = $('meta[name="friendId"]').attr('content');
 
-            console.log('Chat.' + friendId + '.' + userId);
-
-            //var triggered = channel.trigger("hi", data);
-
-            Echo.private('Chat.' + friendId + '.' + userId).listen('BroadcastChat', function (e) {
-                console.log('listend');
-                document.getElementById('ChatAudio').play();
-                _this.chats.push(e.chat);
-            });
-            console.log('done');
-        }
-
-        if (userId != 'null') {
-            console.log('in if');
-            Echo.join('Online').here(function (users) {
-                _this.onlineUsers = users;
-            }).joining(function (user) {
-                _this.onlineUsers.push(user);
-            }).leaving(function (user) {
-                _this.onlineUsers = _this.onlineUsers.filter(function (u) {
-                    u != user;
+            if (friendId != undefined) {
+                axios.post('/chat/getChat/' + friendId).then(function (response) {
+                    _this.chats = response.data;
                 });
-            });
+
+                console.log('Chat.' + friendId + '.' + userId);
+
+                //var triggered = channel.trigger("hi", data);
+
+                Echo.private('Chat.' + friendId + '.' + userId).listen('BroadcastChat', function (e) {
+                    console.log('listend');
+                    document.getElementById('ChatAudio').play();
+                    _this.chats.push(e.chat);
+                });
+                console.log('done');
+            }
+
+            if (userId != 'null') {
+                console.log('in if');
+                Echo.join('Online').here(function (users) {
+                    _this.onlineUsers = users;
+                }).joining(function (user) {
+                    _this.onlineUsers.push(user);
+                }).leaving(function (user) {
+                    _this.onlineUsers = _this.onlineUsers.filter(function (u) {
+                        u != user;
+                    });
+                });
+            }
         }
-    }
-});
+    });
+};
 
 /***/ }),
 /* 16 */

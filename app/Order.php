@@ -29,5 +29,10 @@ class Order extends Model
         return $this->morphMany('App\Photo', 'photoable');
     }
 
+    public function order_status()
+    {
+        return $this -> belongsTo('App\OrderStatus');
+    }
+
 
 }

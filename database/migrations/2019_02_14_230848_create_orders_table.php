@@ -31,6 +31,9 @@ class CreateOrdersTable extends Migration
             $table->integer('orderable_id')->nullable(true);
             $table->string('orderable_type')->nullable(true);
 
+            $table->integer('order_status_id')->unsigned()->nullable(true);
+            $table->foreign('order_status_id')->references('id')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
+
             $table->timestamps();
         });
     }

@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Jobs\SendCreateOrderEmail;
 use App\Mail\OrderShipped;
 use App\MotionGraphicOrder;
 use App\Order;
+use App\OrderStatus;
 use App\Photo;
 use App\Skill;
 use App\WebDesignOrder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class OrderController extends Controller
 {
@@ -29,7 +33,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //$this->authorize('order_index');
+        $this->authorize('order_index');
 
         $orders = Order::with('photos')->get();
         return $orders;
@@ -42,7 +46,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //$this->authorize('order_create');
+        $this->authorize('order_create');
 
         $skills = Skill::all();
         return view('orders.create',compact('skills'));
@@ -57,26 +61,51 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         //request validated in OrderRequest
-        //$this->authorize('order_create');
+        $this->authorize('order_create');
 
         $skill = Skill::where('id',$request->skill)->firstOrFail();
         $user = auth()->user();
 
         $order = new Order($request->all());
-
         $skill->orders()->save($order);
         $user->orders()->save($order);
 
+        //create datail for order
         $temp = $this->create_order_detail($request,$skill);
         $temp->orders()->save($order);
 
+        //create order_status
+        //handle if registered(status) or undefined(status) does not exist
+        try
+        {
+            $status = OrderStatus::where('name','registered') -> firstOrFail();
+        }
+        catch (ModelNotFoundException $e)
+        {
+            try
+            {
+                $status = OrderStatus::where('name','undefined') -> firstOrFail();
+            }
+            catch (ModelNotFoundException $er)
+            {
+                $status = new OrderStatus(['name'=>'undefined']);
+                $status->save();
+            }
+        }
+
+        //save order_status in order
+        $order -> order_status() -> associate($status);
+        $order -> save();
+
+        SendCreateOrderEmail::dispatch($order,$user)->onConnection('database');
+
         flash()->success('Create Order', 'creation was successful');
 
-        Mail::to(Auth::user())
-            -> send(new OrderShipped($user,$order));
-
         //return $order;
+        //return redirect("orders/".$order->id."/addPhoto")->with('success', 'Order registered Successfully!');
         return redirect("orders/".$order->id."/addPhoto");
+
+
     }
 
     /**
@@ -101,7 +130,7 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        //authorize
+        //TODO authorize and edit and redirect
     }
 
     /**
@@ -113,7 +142,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //validate
+        //TODO authorize and update and redirect
     }
 
     /**
@@ -124,7 +153,7 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //TODO authorize and delete and redirect
     }
 
     protected function create_order_detail(OrderRequest $request,Skill $skill)
@@ -157,13 +186,12 @@ class OrderController extends Controller
             'file'  =>  'mimes:jpeg,jpg,png,gif|max:10000'
         ]);
 
-        $photo_path = $request->file('file')->store('photosOforders');
-
-        $photo = new Photo(['photo_path'=>$photo_path]);
-
         $order = Order::where('id',$id)->firstOrFail();
-        $order->photos()->save($photo);
+        $this->authorize('addPhotoPage',$order);
 
+        $photo_path = $request->file('file')->store('photosOforders');
+        $photo = new Photo(['photo_path'=>$photo_path]);
+        $order->photos()->save($photo);
         $photo->save();
 
         return $order;
@@ -171,7 +199,7 @@ class OrderController extends Controller
 
     public function addPhotoPage($id,Request $request)
     {
-        //$this->authorize('order_edit');
+        //Alert::success('Success Title', 'Success Message');
         $order = Order::where('id',$id)->firstOrFail();
         $this->authorize('addPhotoPage',$order);
 

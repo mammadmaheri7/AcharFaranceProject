@@ -36,7 +36,7 @@ class SkillController extends Controller
      */
     public function create()
     {
-        //$this->authorize('skill_create');
+        $this -> authorize('skill_create');
 
         $scopes = Scope::all();
         return view('skills.create',compact('scopes'));
@@ -50,7 +50,8 @@ class SkillController extends Controller
      */
     public function store(SkillRequest $request)
     {
-        //validate
+        //validate on SkillRequest
+        $this -> authorize('skill_create');
 
         $scope = Scope::where('id',$request->scope)->firstOrFail();
         $user = auth()->user();
@@ -65,8 +66,7 @@ class SkillController extends Controller
         //show popup
         flash()->success('Create Skill', 'creation was successful');
 
-        //return $skill;
-        //return view('skills.addPhoto',compact('skill'));
+        //redirect
         return redirect("skills/".$skill->id."/addPhoto");
     }
 
@@ -90,7 +90,9 @@ class SkillController extends Controller
      */
     public function edit($id)
     {
-        $this->authorize('edit_skill');
+        $this -> authorize('skill_edit');
+
+        //TODO : edit specific skill and redirect to view
     }
 
     /**
@@ -102,7 +104,9 @@ class SkillController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this -> authorize('skill_edit');
+
+        //TODO : update specific skill and redirect
     }
 
     /**
@@ -114,17 +118,18 @@ class SkillController extends Controller
     public function destroy($id)
     {
         $this->authorize('skill_delete');
+
+        //TODO : delete specific skill and redirect
     }
 
     public function addPhoto($id,Request $request)
     {
+        $this->authorize('skill_edit');
+
         $photo_path = $request->file('file')->store('photosOfskills');
-
         $photo = new Photo(['photo_path'=>$photo_path]);
-
         $skill = Skill::where('id',$id)->firstOrFail();
-        $skill->photos()->save($photo);
-
+        $skill -> photos() -> save($photo);
         $photo->save();
 
         return $skill;
@@ -132,7 +137,8 @@ class SkillController extends Controller
 
     public function addPhotoPage($id,Request $request)
     {
-        //$this->authorize('skill_edit');
+        $this->authorize('skill_edit');
+
         $skill = Skill::where('id',$id)->firstOrFail();
         return view('skills.addPhoto',compact('skill'));
     }

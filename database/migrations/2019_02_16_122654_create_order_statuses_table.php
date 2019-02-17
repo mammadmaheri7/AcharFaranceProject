@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSocialAccountsTable extends Migration
+class CreateOrderStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateSocialAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('social_accounts', function (Blueprint $table) {
+        Schema::create('order_statuses', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
             $table->timestamps();
-
-            $table->integer('user_id')->onDelete('cascade');
-            $table->string('provider_name')->nullable();
-            $table->string('provider_id')->unique()->nullable();
         });
     }
 
@@ -30,6 +27,6 @@ class CreateSocialAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('social_accounts');
+        Schema::dropIfExists('order_statuses');
     }
 }
