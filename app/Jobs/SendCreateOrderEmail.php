@@ -42,9 +42,6 @@ class SendCreateOrderEmail implements ShouldQueue
     public function handle()
     {
 
-        //dd('annnn');
-        //dd($this->user);
-
         //dd($this->user->email);
         Mail::to($this->user->email)
             -> send(new OrderShipped($this->user,$this->order));
