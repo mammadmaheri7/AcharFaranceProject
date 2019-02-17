@@ -97,8 +97,6 @@ class OrderController extends Controller
         $order -> order_status() -> associate($status);
         $order -> save();
 
-
-
         SendCreateOrderEmail::dispatch($order,$user)->onConnection('database');
 
         flash()->success('Create Order', 'creation was successful');

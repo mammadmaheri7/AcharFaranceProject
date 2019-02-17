@@ -45,6 +45,6 @@ class SendCreateOrderEmail implements ShouldQueue
         //dd($this->user->email);
         Mail::to($this->user->email)
             -> send(new OrderShipped($this->user,$this->order));
-        //dd([Auth::user(),$order]);
+
     }
 }
