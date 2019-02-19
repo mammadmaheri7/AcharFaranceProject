@@ -147,7 +147,7 @@ class ChatController extends Controller
 
         ])->validate();
 
-        $user = Auth::user();1
+        $user = Auth::user();
         $chat = Chat::create([
             'user_id' => $user->getAuthIdentifier(),
             'friend_id' => $request->friend_id,

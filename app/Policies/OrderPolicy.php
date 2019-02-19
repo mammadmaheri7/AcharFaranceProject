@@ -53,4 +53,14 @@ class OrderPolicy
         }
         return false;
     }
+
+    public function edit(User $user,Order $order)
+    {
+        //TODO : check order status for edit
+        if($user->id == $order->user_id )
+        {
+            return true;
+        }
+        return false;
+    }
 }

@@ -35,7 +35,10 @@ class OrderController extends Controller
     {
         $this->authorize('order_index');
 
-        $orders = Order::with('photos')->get();
+        $orders = Order::with('photos')
+                    ->latest()
+                    ->paginate(5);
+                    //->get();
         return $orders;
     }
 
@@ -126,6 +129,14 @@ class OrderController extends Controller
     public function edit($id)
     {
         //TODO authorize and edit and redirect
+        $order = Order::where('id',$id) -> firstOrFail();
+        $skills = Skill::all();
+        $order_status = OrderStatus::where('id',$order->order_status_id) -> firstOrFail();
+
+        //$this->authorize('edit',$order);
+
+
+        return view('orders.edit',compact(['order','skills','order_status']));
     }
 
     /**
@@ -135,9 +146,31 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(OrderRequest $request, $id)
     {
         //TODO authorize and update and redirect
+        $order = Order::where('id',$id) -> firstOrFail();
+        $pre_order = $order;
+        $skill = Skill::where('id',$order->skill_id)->firstOrFail();
+        $user = Auth::user();
+
+        //$this->authorize('update',$order);
+
+        $order->update($request->all());
+        if($request->skill != $order->skill_id)
+        {
+            $newSkill = Skill::where('id',$request->skill)->firstOrFail();
+            $newSkill->orders()->save($order);
+            $user->orders()->save($order);
+
+            //create datail for order and delete previous detail
+            $this->delete_order_detail($request,$skill,$pre_order);
+            $temp = $this->create_order_detail($request,$newSkill);
+            $temp->orders()->save($order);
+        }
+
+        return redirect()->route('orders.index')
+            ->with('success','Order updated successfully');
     }
 
     /**
@@ -173,6 +206,12 @@ class OrderController extends Controller
             default:
                 return null;
         }
+    }
+
+    protected function delete_order_detail(OrderRequest $request,Skill $skill,Order $order)
+    {
+        $name = $skill->name_english;
+        $order->orderable()->delete();
     }
 
     public function addPhoto($id,Request $request)
