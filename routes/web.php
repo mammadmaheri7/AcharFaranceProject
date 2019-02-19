@@ -69,7 +69,6 @@ Route::get('/dashboard',function (){
         $orders = array_merge($orders, $skill->orders()->get()->toArray());
     }
     return $orders;
-
 })                                                                  -> middleware('verified');
 
 
