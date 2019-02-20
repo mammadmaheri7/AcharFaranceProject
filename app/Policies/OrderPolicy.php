@@ -56,11 +56,29 @@ class OrderPolicy
 
     public function edit(User $user,Order $order)
     {
-        //TODO : check order status for edit
-        if($user->id == $order->user_id )
+        if($order->user_id == $user->getAuthIdentifier() && $order->order_status->name == 'registered')
         {
             return true;
         }
         return false;
+    }
+
+    public function update(User $user,Order $order)
+    {
+        if($order->user_id == $user->getAuthIdentifier() && $order->order_status->name == 'registered')
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete(User $user,Order $order)
+    {
+        if($order->user_id == $user->getAuthIdentifier() && $order->order_status->name == 'registered')
+        {
+            return true;
+        }
+        return false;
+
     }
 }

@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class OrderController extends Controller
@@ -128,13 +129,11 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        //TODO authorize and edit and redirect
         $order = Order::where('id',$id) -> firstOrFail();
         $skills = Skill::all();
         $order_status = OrderStatus::where('id',$order->order_status_id) -> firstOrFail();
 
-        //$this->authorize('edit',$order);
-
+        $this->authorize('edit',$order);
 
         return view('orders.edit',compact(['order','skills','order_status']));
     }
@@ -148,13 +147,12 @@ class OrderController extends Controller
      */
     public function update(OrderRequest $request, $id)
     {
-        //TODO authorize and update and redirect
         $order = Order::where('id',$id) -> firstOrFail();
         $pre_order = $order;
         $skill = Skill::where('id',$order->skill_id)->firstOrFail();
         $user = Auth::user();
 
-        //$this->authorize('update',$order);
+        $this->authorize('update',$order);
 
         $order->update($request->all());
         if($request->skill != $order->skill_id)
@@ -169,8 +167,8 @@ class OrderController extends Controller
             $temp->orders()->save($order);
         }
 
-        return redirect()->route('orders.index')
-            ->with('success','Order updated successfully');
+        flash()->success('Update Order','Order updated successfully');
+        return redirect()->route('orders.show',$order->id);
     }
 
     /**
@@ -181,7 +179,18 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //TODO authorize and delete and redirect
+        $order = Order::where('id',$id)->firstOrFail();
+
+        $this->authorize('delete',$order);
+
+        $order->orderable()->delete();
+        $delete_photos = $order->photos;
+        foreach ($delete_photos as $delete_photo)
+        {
+            Storage::delete($delete_photo->photo_path);
+            $delete_photo->delete();
+        }
+        $order->delete();
     }
 
     protected function create_order_detail(OrderRequest $request,Skill $skill)

@@ -12,6 +12,16 @@
         </div>
     </div>
 
+    <form action="{{ route('orders.destroy',$order->id) }}" method="POST">
+
+        <a class="btn btn-info" href="{{ route('orders.show',$order->id) }}">Show</a>
+
+        @csrf
+        @method('DELETE')
+
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+
     @if ($errors->any())
         <div class="alert alert-danger">
             <strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -22,6 +32,7 @@
             </ul>
         </div>
     @endif
+
 
     <form action="{{ route('orders.update',$order->id) }}" method="POST">
         @csrf

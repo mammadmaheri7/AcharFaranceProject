@@ -108,54 +108,27 @@ class ChatController extends Controller
 
     public function sendChat(Request $request)
     {
+        $user = Auth::user();
         $user_id = Auth::user()->getAuthIdentifier();
         $friends = Auth::user()->friends() ;
         $array = null;
-
         foreach ($friends as $f)
         {
             $array[] = $f->id;
-
         }
-        Log::info(print_r($array, true));
-        //$friends_id = array_map(create_function('$o', 'return $o->id;'), (array)$friends);
-        //$friends_id = array_column((array)$friends, 'id');
-
-
-
-        /*
-        if(!Validator::make($request->toArray(), [
-            'friend_id' => [
-                'required',
-                Rule::in([$array]),
-            ],
-
-        ]))
-        {
-            return response([
-                'success' => false,
-                'message' => 'unvalid send message'
-            ], 404);
-        }
-        */
 
         Validator::make($request->toArray(), [
             'friend_id' => [
                 'required',
                 Rule::in($array),
             ],
-
         ])->validate();
 
-        $user = Auth::user();
         $chat = Chat::create([
             'user_id' => $user->getAuthIdentifier(),
             'friend_id' => $request->friend_id,
             'chat' => $request->chat
         ]);
-
-        //BroadcastChat trigger when ever Chat created
-        //broadcast(new BroadcastChat($chat));
 
         return [];
     }
