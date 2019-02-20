@@ -115,6 +115,10 @@ class ScopeController extends Controller
     {
         $this->authorize('scope_delete');
 
-        //TODO : delete speceific scope and redirect
+        $scope = Scope::where('id',$id)->firstOrFail();
+        Storage::delete($scope->photo_path);
+        $scope->delete();
+
+        return redirect(route('skills.index'));
     }
 }

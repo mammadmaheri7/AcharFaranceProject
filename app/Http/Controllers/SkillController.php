@@ -10,6 +10,7 @@ use App\User;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SkillController extends Controller
 {
@@ -91,8 +92,9 @@ class SkillController extends Controller
     public function edit($id)
     {
         $this -> authorize('skill_edit');
+        $skill = Skill::where('id',$id)->firstOrFail();
 
-        //TODO : edit specific skill and redirect to view
+        return view('skills.edit',compact(['skill']));
     }
 
     /**
@@ -104,9 +106,14 @@ class SkillController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //TODO: handling changing Scope and add or delete photo to a skill
         $this -> authorize('skill_edit');
 
-        //TODO : update specific skill and redirect
+        $skill = Skill::where('id',$id)->fistOrFail();
+        $skill->update($request->all());
+
+        flash()->success('Update Skill','Skill updated successfully');
+        return redirect()->route('skills.show',$skill->id);
     }
 
     /**
@@ -119,7 +126,16 @@ class SkillController extends Controller
     {
         $this->authorize('skill_delete');
 
-        //TODO : delete specific skill and redirect
+        $skill = Skill::where('id',$id)->firstOrFail();
+        $photos = $skill->photos;
+        foreach ($photos as $photo)
+        {
+            Storage::delete($photo->photo_path);
+            $photo->delete();
+        }
+        $skill->delete();
+
+        return redirect(route('skills.index'));
     }
 
     public function addPhoto($id,Request $request)
