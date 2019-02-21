@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\OrderStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,7 @@ class DashboardController extends Controller
         $finished_orders = $this -> filterOrderByStatus('finished',$orders);
         $archived_orders = $this -> filterOrderByStatus('archived',$orders);
 
+        /*
         return [
             'undefined_orders'  =>  $undefined_orders,
             'registered_orders' =>  $registered_orders,
@@ -36,6 +38,9 @@ class DashboardController extends Controller
             'finished_orders'   =>  $finished_orders,
             'archived_orders'   =>  $archived_orders
         ];
+        */
+        $statuses = OrderStatus::all();
+        return view('orders.works',compact(['orders','statuses']));
     }
 
     public function getMyOrders()

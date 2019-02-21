@@ -70,7 +70,7 @@
                 </div>
             @endif
 
-            <!--@if($order->recommended_deadline != null)
+            @if($order->recommended_deadline != null)
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Recommended Deadline:</strong>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             @endif
-            -->
+
 
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">

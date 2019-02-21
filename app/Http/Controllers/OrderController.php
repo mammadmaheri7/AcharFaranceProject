@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -247,5 +248,15 @@ class OrderController extends Controller
         $this->authorize('addPhotoPage',$order);
 
         return view('orders.addPhoto',compact('order'));
+    }
+
+    public function changeOrderStatus(Request $request,$id)
+    {
+        $order = Order::where('id',$id) -> firstOrFail();
+        $this -> authorize('changeOrderStatus',$order);
+
+        $order -> order_status_id = $request->order_status;
+
+        return $order;
     }
 }

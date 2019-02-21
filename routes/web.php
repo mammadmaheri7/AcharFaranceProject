@@ -35,6 +35,7 @@ Route::resource('/scopes','ScopeController');
 Route::resource('/orders','OrderController')                        -> middleware('verified');
 Route::post('orders/{id}/photos','OrderController@addPhoto')        -> middleware('verified');
 Route::get('orders/{id}/addPhoto','OrderController@addPhotoPage')   -> middleware('verified');
+Route::post('/orders/{id}/change_status','OrderController@changeOrderStatus')                           -> middleware('verified');
 
 Route::resource('/skills','SkillController');
 Route::post('skills/{id}/photos','SkillController@addPhoto');
