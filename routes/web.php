@@ -47,8 +47,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/login/{provider}', 'Auth\SocialAccountController@redirectToProvider');
 Route::get('/login/{provider}/callback', 'Auth\SocialAccountController@handleProviderCallback');
 
-
-
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/friends','FriendController@index')                     ->middleware('auth');
@@ -58,17 +56,7 @@ Route::get('/chat/{id}','ChatController@show')                      ->middleware
 Route::post('/chat/getChat/{id}','ChatController@getChat')          ->middleware('auth');
 Route::post('/chat/sendChat','ChatController@sendChat')             ->middleware('auth');
 
-Route::get('/dashboard',function (){
-
-    $user = auth()->user();
-    $skills = $user->skills;
-
-    $orders = array();
-    foreach ($skills as $skill)
-    {
-        $orders = array_merge($orders, $skill->orders()->get()->toArray());
-    }
-    return $orders;
-})                                                                  -> middleware('verified');
+Route::get('/dashboard/myWorks','DashboardController@getWorks')     ->middleware('verified');
+Route::get('/dashboard/myOrders','DashboardController@getMyOrders') ->middleware('verified');
 
 
