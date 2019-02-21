@@ -60,12 +60,21 @@ class OrderPolicy
         {
             return true;
         }
+        elseif ($user->getAuthIdentifier() == $order->skill->user_id)
+        {
+            return true;
+        }
+
         return false;
     }
 
     public function update(User $user,Order $order)
     {
         if($order->user_id == $user->getAuthIdentifier() && $order->order_status->name == 'registered')
+        {
+            return true;
+        }
+        elseif ($user->getAuthIdentifier() == $order->skill->user_id)
         {
             return true;
         }
