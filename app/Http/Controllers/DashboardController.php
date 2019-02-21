@@ -39,6 +39,9 @@ class DashboardController extends Controller
             'archived_orders'   =>  $archived_orders
         ];
         */
+
+        //TODO : return orders divided by status and therefor showing will be affected t
+
         $statuses = OrderStatus::all();
         return view('orders.works',compact(['orders','statuses']));
     }
