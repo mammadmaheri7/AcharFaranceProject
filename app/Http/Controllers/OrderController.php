@@ -130,7 +130,7 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        $order = Order::where('id',$id) -> firstOrFail();
+        $order = Order::where('id',$id) -> with('photos') -> firstOrFail();
         $skills = Skill::all();
         $order_status = OrderStatus::where('id',$order->order_status_id) -> firstOrFail();
 
@@ -233,7 +233,7 @@ class OrderController extends Controller
         $order = Order::where('id',$id)->firstOrFail();
         $this->authorize('addPhotoPage',$order);
 
-        $photo_path = $request->file('file')->store('photosOforders');
+        $photo_path = $request->file('file')->store('public/photosOforders');
         $photo = new Photo(['photo_path'=>$photo_path]);
         $order->photos()->save($photo);
         $photo->save();
@@ -258,5 +258,16 @@ class OrderController extends Controller
         $order -> order_status_id = $request->order_status;
 
         return $order;
+    }
+
+    public function delete_photo($id)
+    {
+        $photo = Photo::where('id',$id)->firstOrFail();
+        $this->authorize('addPhotoPage',$photo->photoable);
+
+        Storage::delete($photo->photo_path);
+        $photo->delete();
+
+        return back();
     }
 }

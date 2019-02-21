@@ -11,7 +11,9 @@
 |
 */
 use App\Http\Controllers\Auth\SocialAccountController;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
 Route::get('/', function () {
@@ -36,6 +38,7 @@ Route::resource('/orders','OrderController')                        -> middlewar
 Route::post('orders/{id}/photos','OrderController@addPhoto')        -> middleware('verified');
 Route::get('orders/{id}/addPhoto','OrderController@addPhotoPage')   -> middleware('verified');
 Route::post('/orders/{id}/change_status','OrderController@changeOrderStatus')                           -> middleware('verified');
+Route::delete('/photos/{id}','OrderController@delete_photo')          -> middleware('verified');
 
 Route::resource('/skills','SkillController');
 Route::post('skills/{id}/photos','SkillController@addPhoto');
@@ -59,5 +62,7 @@ Route::post('/chat/sendChat','ChatController@sendChat')             ->middleware
 
 Route::get('/dashboard/myWorks','DashboardController@getWorks')     ->middleware('verified');
 Route::get('/dashboard/myOrders','DashboardController@getMyOrders') ->middleware('verified');
+
+
 
 

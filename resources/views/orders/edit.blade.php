@@ -90,7 +90,22 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
-
     </form>
+
+    <div style="width:100%; height: 220px" >
+        <h3>Photos: </h3>
+
+        @foreach($order->photos as $photo)
+            <div style="float:left;width:25%;height:100%;">
+                <form action="/photos/{{ $photo -> id }}" method="post">
+
+                    {{csrf_field()}}
+                    {{method_field('DELETE')}}
+                    <button class="btn btn_danger " type="submit">&times;</button>
+                </form>
+                <img src="{{$photo->getUrlPath()}}" style="width: 100% ; height: 100%" >
+            </div>
+        @endforeach
+    </div>
 
 @endsection
