@@ -53,4 +53,49 @@ class OrderPolicy
         }
         return false;
     }
+
+    public function edit(User $user,Order $order)
+    {
+        if($order->user_id == $user->getAuthIdentifier() && $order->order_status->name == 'registered')
+        {
+            return true;
+        }
+        elseif ($user->getAuthIdentifier() == $order->skill->user_id)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function update(User $user,Order $order)
+    {
+        if($order->user_id == $user->getAuthIdentifier() && $order->order_status->name == 'registered')
+        {
+            return true;
+        }
+        elseif ($user->getAuthIdentifier() == $order->skill->user_id)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete(User $user,Order $order)
+    {
+        if($order->user_id == $user->getAuthIdentifier() && $order->order_status->name == 'registered')
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public function changeOrderStatus(User $user,Order $order)
+    {
+        if($user->getAuthIdentifier() == $order->skill->user_id)
+        {
+            return true;
+        }
+        return false;
+    }
 }

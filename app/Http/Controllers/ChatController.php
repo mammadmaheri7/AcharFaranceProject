@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use App\Chat;
 use App\Events\BroadcastChat;
 use App\User;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Validator;
 
 class ChatController extends Controller
 {
@@ -51,10 +56,7 @@ class ChatController extends Controller
      */
     public function show($id)
     {
-
         $friend = User::find($id);
-        //$this -> authorize('showPv',$friend);
-        //$this->authorize('showpv',$friend);
         return view('chat.show')->withFriend($friend);
     }
 
@@ -106,14 +108,27 @@ class ChatController extends Controller
 
     public function sendChat(Request $request)
     {
+        $user = Auth::user();
+        $user_id = Auth::user()->getAuthIdentifier();
+        $friends = Auth::user()->friends() ;
+        $array = null;
+        foreach ($friends as $f)
+        {
+            $array[] = $f->id;
+        }
+
+        Validator::make($request->toArray(), [
+            'friend_id' => [
+                'required',
+                Rule::in($array),
+            ],
+        ])->validate();
+
         $chat = Chat::create([
-            'user_id' => $request->user_id,
+            'user_id' => $user->getAuthIdentifier(),
             'friend_id' => $request->friend_id,
             'chat' => $request->chat
         ]);
-
-        //BroadcastChat trigger when ever Chat created
-        //broadcast(new BroadcastChat($chat));
 
         return [];
     }

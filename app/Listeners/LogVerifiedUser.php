@@ -30,18 +30,12 @@ class LogVerifiedUser
      */
     public function handle($event)
     {
-
-
         $user = $event->user;
         $userFriends = $user->friends();
 
-
-
+        //adding managers to friend
         $manager = Role::where('name','manager') -> with('users') ->firstOrFail();
         $managers = $manager -> users;
-
-        Log::info('handler of verifiend called');
-
         foreach ($managers as $mn)
         {
             if(!$userFriends->contains($mn))
@@ -55,7 +49,8 @@ class LogVerifiedUser
             }
         }
 
-
-
+        //add verifiend_user to roles
+        $role = Role::where('name','verified_user') -> firstOrFail();
+        $user -> roles() -> save($role);
     }
 }

@@ -11,7 +11,10 @@
 |
 */
 use App\Http\Controllers\Auth\SocialAccountController;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,11 +27,18 @@ Route::get('email',function () {
     });
 })                                                                  ->middleware('verified');
 
+Route::get('/test',function (){
+    Schema::disableForeignKeyConstraints();
+    Schema::drop('users');
+});
+
 Route::resource('/scopes','ScopeController');
 
 Route::resource('/orders','OrderController')                        -> middleware('verified');
 Route::post('orders/{id}/photos','OrderController@addPhoto')        -> middleware('verified');
 Route::get('orders/{id}/addPhoto','OrderController@addPhotoPage')   -> middleware('verified');
+Route::post('/orders/{id}/change_status','OrderController@changeOrderStatus')                           -> middleware('verified');
+Route::delete('/photos/{id}','OrderController@delete_photo')          -> middleware('verified');
 
 Route::resource('/skills','SkillController');
 Route::post('skills/{id}/photos','SkillController@addPhoto');
@@ -41,8 +51,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/login/{provider}', 'Auth\SocialAccountController@redirectToProvider');
 Route::get('/login/{provider}/callback', 'Auth\SocialAccountController@handleProviderCallback');
 
-
-
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/friends','FriendController@index')                     ->middleware('auth');
@@ -52,18 +60,9 @@ Route::get('/chat/{id}','ChatController@show')                      ->middleware
 Route::post('/chat/getChat/{id}','ChatController@getChat')          ->middleware('auth');
 Route::post('/chat/sendChat','ChatController@sendChat')             ->middleware('auth');
 
-Route::get('/dashboard',function (){
+Route::get('/dashboard/myWorks','DashboardController@getWorks')     ->middleware('verified');
+Route::get('/dashboard/myOrders','DashboardController@getMyOrders') ->middleware('verified');
 
-    $user = auth()->user();
-    $skills = $user->skills;
 
-    $orders = array();
-    foreach ($skills as $skill)
-    {
-        $orders = array_merge($orders, $skill->orders()->get()->toArray());
-    }
-    return $orders;
-
-})                                                                  -> middleware('verified');
 
 

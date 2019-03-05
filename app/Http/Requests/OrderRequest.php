@@ -28,7 +28,6 @@ class OrderRequest extends FormRequest
             'skill'                 => 'required',
             'recommended_price'     => 'integer',
             'recommended_deadline'  => 'date'
-
         ];
     }
 }

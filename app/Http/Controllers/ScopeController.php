@@ -22,7 +22,7 @@ class ScopeController extends Controller
      */
     public function index()
     {
-        $scopes =  DB::table('scopes')->get();
+        $scopes = Scope::with('skills') -> get();
         return $scopes;
     }
 
@@ -33,8 +33,7 @@ class ScopeController extends Controller
      */
     public function create()
     {
-        //return Permission::all();
-        //$this->authorize('scope_create');
+        $this -> authorize('scope_create');
         return view('scopes.create');
     }
 
@@ -46,11 +45,12 @@ class ScopeController extends Controller
      */
     public function store(ScopeRequest $request)
     {
-        //validate
+        //validate on ScopeRequest
+        $this->authorize('scope_create');
 
-        $photo_path = $request->file('photo')->store('photosOfscopes');
-        $scope = new Scope($request->all());
-        $scope->photo_path = $photo_path;
+        $photo_path = $request -> file('photo') -> store('photosOfscopes');
+        $scope = new Scope($request -> all());
+        $scope -> photo_path = $photo_path;
 
         $scope->save();
 
@@ -81,9 +81,10 @@ class ScopeController extends Controller
      */
     public function edit($id)
     {
-        //$this->authorize('scope_edit');
-        $scope = Scope::where('id',$id)->firstOrFail();
+        $this -> authorize('scope_edit');
+        $scope = Scope::where('id',$id) -> firstOrFail();
 
+        //TODO : construct view (scopes.edit)
         return view('scopes.edit',compact('scope'));
     }
 
@@ -96,8 +97,11 @@ class ScopeController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this -> authorize('scope_edit');
+
         $scope = Scope::where('id',$id)->firstOrFail();
         $scope -> update($request->all());
+
         return $scope;
     }
 
@@ -109,7 +113,12 @@ class ScopeController extends Controller
      */
     public function destroy($id)
     {
-        //authorize
         $this->authorize('scope_delete');
+
+        $scope = Scope::where('id',$id)->firstOrFail();
+        Storage::delete($scope->photo_path);
+        $scope->delete();
+
+        return redirect(route('skills.index'));
     }
 }

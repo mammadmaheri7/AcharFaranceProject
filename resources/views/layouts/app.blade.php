@@ -3,13 +3,18 @@
 <html lang="{{ app()->getLocale() }}">
 
 <head>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="userId" content="{{Auth::check() ? Auth::user()->id : 'null' }}">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <title>{{ config('app.name', 'Laravel') }} {{ app()->version() }}</title>
 
@@ -78,6 +83,18 @@
             @yield('content')
 
     </div>
-    <script src="{{ asset('js/app.js') }}"></script>
+
+    @if(session()->has('flash_message'))
+        <script>
+
+            Swal.fire({
+                title: "{{session('flash_message.title')}}",
+                text: "{{session('flash_message.message')}}",
+                icon: "{{session('flash_message.level')}}",
+                timer: 1700,
+            });
+        </script>
+    @endif
+
 </body>
 </html>

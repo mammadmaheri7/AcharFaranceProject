@@ -10,6 +10,7 @@ use App\User;
 use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SkillController extends Controller
 {
@@ -36,7 +37,7 @@ class SkillController extends Controller
      */
     public function create()
     {
-        //$this->authorize('skill_create');
+        $this -> authorize('skill_create');
 
         $scopes = Scope::all();
         return view('skills.create',compact('scopes'));
@@ -50,7 +51,8 @@ class SkillController extends Controller
      */
     public function store(SkillRequest $request)
     {
-        //validate
+        //validate on SkillRequest
+        $this -> authorize('skill_create');
 
         $scope = Scope::where('id',$request->scope)->firstOrFail();
         $user = auth()->user();
@@ -65,8 +67,7 @@ class SkillController extends Controller
         //show popup
         flash()->success('Create Skill', 'creation was successful');
 
-        //return $skill;
-        //return view('skills.addPhoto',compact('skill'));
+        //redirect
         return redirect("skills/".$skill->id."/addPhoto");
     }
 
@@ -90,7 +91,10 @@ class SkillController extends Controller
      */
     public function edit($id)
     {
-        $this->authorize('edit_skill');
+        $this -> authorize('skill_edit');
+        $skill = Skill::where('id',$id)->firstOrFail();
+
+        return view('skills.edit',compact(['skill']));
     }
 
     /**
@@ -102,7 +106,14 @@ class SkillController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //TODO: handling changing Scope and add or delete photo to a skill
+        $this -> authorize('skill_edit');
+
+        $skill = Skill::where('id',$id)->fistOrFail();
+        $skill->update($request->all());
+
+        flash()->success('Update Skill','Skill updated successfully');
+        return redirect()->route('skills.show',$skill->id);
     }
 
     /**
@@ -114,17 +125,27 @@ class SkillController extends Controller
     public function destroy($id)
     {
         $this->authorize('skill_delete');
+
+        $skill = Skill::where('id',$id)->firstOrFail();
+        $photos = $skill->photos;
+        foreach ($photos as $photo)
+        {
+            Storage::delete($photo->photo_path);
+            $photo->delete();
+        }
+        $skill->delete();
+
+        return redirect(route('skills.index'));
     }
 
     public function addPhoto($id,Request $request)
     {
+        $this->authorize('skill_edit');
+
         $photo_path = $request->file('file')->store('photosOfskills');
-
         $photo = new Photo(['photo_path'=>$photo_path]);
-
         $skill = Skill::where('id',$id)->firstOrFail();
-        $skill->photos()->save($photo);
-
+        $skill -> photos() -> save($photo);
         $photo->save();
 
         return $skill;
@@ -132,7 +153,8 @@ class SkillController extends Controller
 
     public function addPhotoPage($id,Request $request)
     {
-        //$this->authorize('skill_edit');
+        $this->authorize('skill_edit');
+
         $skill = Skill::where('id',$id)->firstOrFail();
         return view('skills.addPhoto',compact('skill'));
     }
