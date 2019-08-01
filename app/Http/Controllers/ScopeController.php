@@ -33,7 +33,7 @@ class ScopeController extends Controller
      */
     public function create()
     {
-        $this -> authorize('scope_create');
+        //$this -> authorize('scope_create');
         return view('scopes.create');
     }
 
