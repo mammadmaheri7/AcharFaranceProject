@@ -20,6 +20,7 @@ class SendCreateOrderEmail implements ShouldQueue
 
     public $order;
     public $user;
+    public $tries = 3;
 
     /**
      * Create a new job instance.

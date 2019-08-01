@@ -40,5 +40,3 @@ class OrderShipped extends Mailable
     }
 }
 
-
-//TODO : orderShipEmail and verificationEmail should be queued

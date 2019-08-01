@@ -35,10 +35,13 @@ Route::get('/test',function (){
 Route::resource('/scopes','ScopeController');
 
 Route::resource('/orders','OrderController')                        -> middleware('verified');
-Route::post('orders/{id}/photos','OrderController@addPhoto')        -> middleware('verified');
-Route::get('orders/{id}/addPhoto','OrderController@addPhotoPage')   -> middleware('verified');
-Route::post('/orders/{id}/change_status','OrderController@changeOrderStatus')                           -> middleware('verified');
-Route::delete('/photos/{id}','OrderController@delete_photo')          -> middleware('verified');
+Route::middleware('verified')->prefix('/orders')->group(function (){
+    Route::post('/{id}/photos','OrderController@addPhoto');
+    Route::get('/{id}/addPhoto','OrderController@addPhotoPage');
+    Route::post('/{id}/change_status','OrderController@changeOrderStatus');
+});
+
+Route::delete('/photos/{id}','OrderController@delete_photo')->middleware('verified');
 
 Route::resource('/skills','SkillController');
 Route::post('skills/{id}/photos','SkillController@addPhoto');

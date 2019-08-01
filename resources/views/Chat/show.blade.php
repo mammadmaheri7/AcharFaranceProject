@@ -13,7 +13,6 @@
                 <div class="panel-heading">
                     <div>
                         {{$friend->name}}
-
                     </div>
 
                     <div class="contain is-pulled-right">
@@ -23,6 +22,12 @@
                         </a>
                         </br>
                     </div>
+
+
+                        <div style="float: right" class="badge badge-pill badge-primary">
+                            @{{ typing }}
+                        </div>
+
 
                     <chat v-bind:chats="chats" v-bind:userid="{{Auth::user()->id}}"
                           v-bind:friendid="{{$friend->id}}">

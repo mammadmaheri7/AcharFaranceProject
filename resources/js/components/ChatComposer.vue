@@ -2,6 +2,7 @@
     <div class="panel-block field">
         <div class="control">
             <input type="text" class="input" v-on:keyup.enter="sendChat" v-model="chat">
+
         </div>
         <div class="control auto-width">
             <input type="button" class="button" value="Send" v-on:click="sendChat">
@@ -18,6 +19,23 @@
                 chat:''
             };
         },
+        watch:{
+            chat(){
+
+                Echo.private('chat')
+                        .whisper('typing',{
+                            name:this.chat
+                        })
+
+
+                /*
+                Echo.private('Typing.'+this.friendid+'.'+this.userid)
+                        .whisper('doing',{
+                            name:this.chat
+                        })
+                */
+            },
+        },
         methods:{
             sendChat:function (e) {
                 if(this.chat != '')
@@ -27,24 +45,32 @@
                         chat:this.chat,
                         friend_id:this.friendid,
                         user_id:this.userid
-
                     };
 
                     this.chat='';
 
                     axios.post('/chat/sendChat',data)
                             .then((response)=>{
-
                                 this.chats.push(data);
-
                             })
                             .catch(error=>{
                                 console.log(error);
                     })
-
-
                 }
-            }
+            },
+            /*
+            isTyping(){
+                let channel = Echo.private('ch');
+
+                setTimeout(function() {
+                    channel.whisper('ty', {
+                        //user: Laravel.user,
+                        typing: true
+                    });
+                }, 300);
+            },
+            */
+
         }
 
     }

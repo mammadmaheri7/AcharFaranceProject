@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Child;
 use App\Http\Requests\ScopeRequest;
-use App\Permission;
 use App\Scope;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 class ScopeController extends Controller
 {

@@ -26,3 +26,25 @@ Broadcast::channel('Chat.{user_id}.{friend_id}', function ($user, $user_id,$frie
 Broadcast::channel('Online',function ($user){
     return $user;
 });
+
+
+Broadcast::channel('chat',function($user){
+    return $user;
+});
+
+
+Broadcast::channel('ch', function ($user) {
+    return Auth::check();
+});
+
+
+
+Broadcast::channel('Typing.{user_id}.{friend_id}', function ($user, $user_id,$friend_id){
+    if((int)$user->id == $friend_id)
+    {
+        return $user;
+    }
+
+
+});
+
